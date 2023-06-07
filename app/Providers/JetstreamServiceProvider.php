@@ -26,6 +26,9 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
 
+        /**
+         * Add register option in login page
+         */
         Fortify::loginView(function () {
             return Inertia::render('Auth/Login', [
                 'canRegister' => Route::has('register'),
