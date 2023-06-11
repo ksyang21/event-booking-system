@@ -14,8 +14,8 @@ class EventSeeder extends Seeder
             $event->title = $faker->text(10);
             $event->description = $faker->paragraph();
             $event->date = $faker->date();
-            $event->time = $faker->time();
-            $event->location = $faker->address();
+            $event->time = $faker->time('H:00:00');
+            $event->location = $faker->city();
             $event->capacity = $faker->randomDigit();
             $event->status = 0;
             $event->save();
