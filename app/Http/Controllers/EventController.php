@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Event;
@@ -67,5 +68,16 @@ class EventController extends Controller
         $event->delete();
 
         return Redirect::route('events.index')->with('success', 'Event deleted successfully!');
+    }
+
+    public function completeEvent(Request $request, Event $event): \Illuminate\Http\JsonResponse
+    {
+        $event->status = 1;
+        $event->save();
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Event has been marked as completed',
+        ]);
     }
 }

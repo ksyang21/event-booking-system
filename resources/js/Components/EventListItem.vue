@@ -1,17 +1,17 @@
 <script setup>
-import {h} from 'vue';
+import {h, inject} from 'vue';
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {NButton, NDropdown, NIcon} from 'naive-ui'
 import {Pen, Trash, CheckCircle} from '@vicons/fa';
 
-defineProps({
-    title: String,
-    description: String,
-    date: String,
-    time: String,
-    location: String,
-    capacity: Number
+const props = defineProps({
+    event: Object,
 })
+
+const Swal = inject('$swal')
+
+const emit = defineEmits(['remove'])
+
 const renderIcon = (icon) => {
     return () => {
         return h(NIcon, null, {
@@ -37,13 +37,34 @@ const options = [
     },
     {
         label: "Check as Completed",
-        key: "checked",
-        icon: renderIcon(CheckCircle)
+        key: "completed",
+        icon: renderIcon(CheckCircle),
+        props: {
+            onClick: () => {
+                Swal.fire({
+                    icon: 'info',
+                    html: `Are you sure you want to mark <b>${props.event.title}</b> as completed?`,
+                    showCancelButton: true
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        let eventId = props.event.id;
+                        let response = await completeEvent(eventId);
+                        if (response.data.status === 1) {
+                            emit('remove-item', eventId, response.data.message)
+                        }
+                    }
+                })
+            }
+        }
     },
 ];
 
-function log(key) {
-    console.log(key)
+async function completeEvent(eventId) {
+    try {
+        return await axios.put(`/api/events/${eventId}/update-status`);
+    } catch (error) {
+        console.log(error.response.data.message);
+    }
 }
 
 function getDayOfWeek(dateString) {
@@ -58,32 +79,33 @@ function getDayOfWeek(dateString) {
 
     return daysOfWeek[dayOfWeekIndex].toUpperCase();
 }
+
 </script>
 
 <template>
     <div class="border border-slate-100 shadow-md rounded-md mt-3 w-100 p-3">
         <div class="flex items-center border-b-2 pb-3">
             <div class="flex flex-col items-center px-5 border-r-2 border-gray-400 min-w-[8rem] max-w-[8rem] w-[8rem]">
-                <p class="text-sm">{{ getDayOfWeek(date) }}</p>
-                <p class="text-lg">{{ date }}</p>
+                <p class="text-sm">{{ getDayOfWeek(event.date) }}</p>
+                <p class="text-lg">{{ event.date }}</p>
             </div>
             <div class="flex flex-col px-5 min-w-[12rem] max-w-[12rem] w-[12rem]">
                 <p class="text-xs">
                     <font-awesome-icon icon="clock" class="text-gray-400 mr-3"></font-awesome-icon>
-                    {{ time }}
+                    {{ event.time }}
                 </p>
                 <p class="text-xs mt-3">
                     <font-awesome-icon icon="location-dot" class="text-gray-400 mr-3"></font-awesome-icon>
-                    {{ location }}
+                    {{ event.location }}
                 </p>
                 <p class="text-xs mt-3">
                     <font-awesome-icon icon="user" class="text-gray-400 mr-3"></font-awesome-icon>
-                    {{ capacity }}
+                    {{ event.capacity }}
                 </p>
             </div>
-            <p class="text-2xl">{{ title }}</p>
+            <p class="text-2xl">{{ event.title }}</p>
             <div class="ml-auto">
-                <n-dropdown trigger="hover" :options="options" @select="log">
+                <n-dropdown trigger="hover" :options="options" :size="'large'">
                     <n-button>Action
                         <font-awesome-icon icon="chevron-down" class="ml-2"></font-awesome-icon>
                     </n-button>
@@ -92,7 +114,7 @@ function getDayOfWeek(dateString) {
         </div>
         <div class="mt-4 ml-4">
             <p class="text-lg">Details</p>
-            <p class="text-gray-500 mt-2">{{ description }}</p>
+            <p class="text-gray-500 mt-2">{{ event.description }}</p>
         </div>
     </div>
 </template>

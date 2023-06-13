@@ -15,6 +15,7 @@ class DashboardController extends Controller
 //            ->orderBy('date', 'asc')
 //            ->get();
         $current_user_upcoming_events = Event::query()
+            ->where('status', 0)
             ->orderBy('date', 'asc')
             ->get();
 
