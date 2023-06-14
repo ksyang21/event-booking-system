@@ -119,8 +119,9 @@ const logout = () => {
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
-                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition items-center">
                                             <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                                            <p class="text-gray-600 ml-2">{{ $page.props.auth.user.name }}</p>
                                         </button>
 
                                         <span v-else class="inline-flex rounded-md">
@@ -135,6 +136,7 @@ const logout = () => {
                                     </template>
 
                                     <template #content>
+                                        <div class="border-t border-gray-200" />
                                         <!-- Account Management -->
                                         <div class="block px-4 py-2 text-xs text-gray-400">
                                             Manage Account

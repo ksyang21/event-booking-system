@@ -20,6 +20,8 @@ function removeEvent(eventId, message) {
         allowEnterKey: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
+        position: 'top-end',
+        toast: true
     })
 }
 

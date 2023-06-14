@@ -30,3 +30,6 @@ Route::get('seed-events', function() {
 
 // Get all upcoming events
 Route::get('get-upcoming-events', [EventController::class, 'getUpcomingEvents']);
+
+// Delete event
+Route::delete('events/{event}', [EventController::class, 'destroy']);

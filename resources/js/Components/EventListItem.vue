@@ -7,10 +7,9 @@ import {Pen, Trash, CheckCircle} from '@vicons/fa';
 const props = defineProps({
     event: Object,
 })
+const emit = defineEmits(['remove-item'])
 
 const Swal = inject('$swal')
-
-const emit = defineEmits(['remove-item'])
 
 const renderIcon = (icon) => {
     return () => {
@@ -29,14 +28,32 @@ const options = [
     {
         label: "Delete",
         key: "delete",
-        icon: renderIcon(Trash)
+        icon: renderIcon(Trash),
+        props: {
+            onClick: () => {
+                Swal.fire({
+                    icon: 'info',
+                    html: `Are you sure you want to delete <b>${props.event.title}</b>?`,
+                    showCancelButton: true,
+                    confirmButtonColor: '#d71d28'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        let eventId = props.event.id;
+                        let response = await deleteEvent(eventId);
+                        if(response.data.status === 1) {
+                            emit('remove-item', eventId, response.data.message)
+                        }
+                    }
+                })
+            },
+        }
     },
     {
         type: 'divider',
         key: 'd1'
     },
     {
-        label: "Check as Completed",
+        label: "Mark as Completed",
         key: "completed",
         icon: renderIcon(CheckCircle),
         props: {
@@ -44,7 +61,8 @@ const options = [
                 Swal.fire({
                     icon: 'info',
                     html: `Are you sure you want to mark <b>${props.event.title}</b> as completed?`,
-                    showCancelButton: true
+                    showCancelButton: true,
+                    confirmButtonColor: '#18a058',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
                         let eventId = props.event.id;
@@ -64,6 +82,14 @@ async function completeEvent(eventId) {
         return await axios.put(`/api/events/${eventId}/complete-event`);
     } catch (error) {
         console.log(error.response.data.message);
+    }
+}
+
+async function deleteEvent(eventId) {
+    try {
+        return await axios.delete(`/api/events/${eventId}`);
+    } catch (error) {
+        console.log({Error: error});
     }
 }
 

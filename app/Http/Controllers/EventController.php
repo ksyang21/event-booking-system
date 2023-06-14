@@ -63,11 +63,14 @@ class EventController extends Controller
         return Redirect::route('events.index')->with('success', 'Event updated successfully!');
     }
 
-    public function destroy(Event $event)
+    public function destroy(Request $request, Event $event)
     {
         $event->delete();
 
-        return Redirect::route('events.index')->with('success', 'Event deleted successfully!');
+        return response()->json([
+            'status' => 1,
+            'message' => 'Event deleted successfully!',
+        ]);
     }
 
     public function completeEvent(Request $request, Event $event): \Illuminate\Http\JsonResponse
