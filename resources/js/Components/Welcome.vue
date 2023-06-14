@@ -58,7 +58,7 @@ async function getUpcomingEvents() {
 
             <p class="mt-8 text-2xl font-medium text-gray-900 flex items-center">
                 Welcome back,
-                <img class="h-8 w-8 rounded-full object-cover mx-2" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                <img v-if="$page.props.jetstream.managesProfilePhotos" class="h-8 w-8 rounded-full object-cover mx-2" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
                 {{ $page.props.auth.user.name }} !
             </p>
 
