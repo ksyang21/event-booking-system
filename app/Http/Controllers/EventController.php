@@ -80,4 +80,17 @@ class EventController extends Controller
             'message' => 'Event has been marked as completed',
         ]);
     }
+
+    public function getUpcomingEvents(): \Illuminate\Http\JsonResponse
+    {
+        $upcoming_events = Event::query()
+            ->where('status', 0)
+            ->orderBy('date', 'asc')
+            ->get();
+
+        return response()->json([
+            'status' => 1,
+            'data' => $upcoming_events
+        ]);
+    }
 }

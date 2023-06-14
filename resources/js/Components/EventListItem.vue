@@ -10,7 +10,7 @@ const props = defineProps({
 
 const Swal = inject('$swal')
 
-const emit = defineEmits(['remove'])
+const emit = defineEmits(['remove-item'])
 
 const renderIcon = (icon) => {
     return () => {
@@ -61,7 +61,7 @@ const options = [
 
 async function completeEvent(eventId) {
     try {
-        return await axios.put(`/api/events/${eventId}/update-status`);
+        return await axios.put(`/api/events/${eventId}/complete-event`);
     } catch (error) {
         console.log(error.response.data.message);
     }

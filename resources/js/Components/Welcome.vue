@@ -22,14 +22,39 @@ function removeEvent(eventId, message) {
         allowEscapeKey: false,
     })
 }
+
+async function seedEvents() {
+    await axios.get(`/api/seed-events`)
+    Swal.fire({
+        title: "Done seeding!",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+    }).then(
+        getUpcomingEvents()
+    )
+}
+
+async function getUpcomingEvents() {
+    let response = await axios.get('/api/get-upcoming-events')
+    events.value = response.data.data
+}
 </script>
 
 <template>
     <div>
         <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
-            <h1 class="text-3xl font-semibold">
-                Event Booking System
-            </h1>
+            <div class="flex items-center">
+                <h1 class="text-3xl font-semibold">
+                    Event Booking System
+                </h1>
+                <button class="ml-auto rounded-full bg-slate-300 py-2 px-6 hover:bg-slate-400" @click="seedEvents">Seed
+                    Event
+                </button>
+            </div>
 
             <p class="mt-8 text-2xl font-medium text-gray-900">
                 Welcome back, {{ $page.props.auth.user.name }}!
