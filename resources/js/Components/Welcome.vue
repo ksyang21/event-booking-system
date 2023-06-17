@@ -1,6 +1,9 @@
 <script setup>
 import {inject, ref} from "vue";
-import EventListItem from "@/Components/EventListItem.vue";
+import EventListItem from "@/Components/Dashboard/EventListItem.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import ApplicationMark from "@/Components/ApplicationMark.vue";
+import {Link} from "@inertiajs/vue3";
 // import StatusFilter from "@/Components/Dashboard/StatusFilter.vue";
 
 const props = defineProps({
@@ -47,41 +50,48 @@ async function getUpcomingEvents() {
 </script>
 
 <template>
-    <div>
-        <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
-            <div class="flex items-center">
-                <h1 class="text-3xl font-semibold">
-                    Event Booking System
-                </h1>
-                <button class="ml-auto rounded-full bg-slate-300 py-2 px-6 hover:bg-slate-400" @click="seedEvents">Seed
-                    Event
-                </button>
+    <div class="p-6 lg:p-8 bg-white">
+        <div class="flex items-center">
+            <h1 class="text-3xl font-semibold">
+                Event Booking System
+            </h1>
+            <div class="ml-auto">
+                <a href="javascript:void(0)" class="rounded-full bg-slate-300 py-2 px-6 hover:bg-slate-400"
+                   @click="seedEvents">
+                    Seed Event
+                </a>
+                <Link :href="route('events.create')"
+                      class="ml-2 rounded-full bg-green-500 py-2 px-6 hover:bg-green-600 text-white">
+                    <font-awesome-icon icon="plus" class="mr-2"></font-awesome-icon>
+                    Add
+                </Link>
             </div>
+        </div>
 
-            <p class="mt-8 text-2xl font-medium text-gray-900 flex items-center">
-                Welcome back,
-                <img v-if="$page.props.jetstream.managesProfilePhotos" class="h-8 w-8 rounded-full object-cover mx-2" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-                {{ $page.props.auth.user.name }} !
-            </p>
+        <p class="mt-8 text-2xl font-medium text-gray-900 flex items-center">
+            Welcome back,
+            <img v-if="$page.props.jetstream.managesProfilePhotos" class="h-8 w-8 rounded-full object-cover mx-2"
+                 :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+            {{ $page.props.auth.user.name }} !
+        </p>
 
-            <!--            <StatusFilter class="mt-6"/>-->
+        <!--            <StatusFilter class="mt-6"/>-->
 
-            <div class="mt-7">
-                <div v-if="events.length > 0">
-                    <p class="text-xl font-semibold" v-if="events.length > 0">
-                        You have <span class="text-blue-500">{{ events.length }}</span> upcoming event<span
-                        v-if="events.length > 1">s</span>.
-                    </p>
+        <div class="mt-7">
+            <div v-if="events.length > 0">
+                <p class="text-xl font-semibold" v-if="events.length > 0">
+                    You have <span class="text-blue-500">{{ events.length }}</span> upcoming event<span
+                    v-if="events.length > 1">s</span>.
+                </p>
 
-                    <ul class="scale-100">
-                        <li v-for="(event, index) in events" :key="index">
-                            <EventListItem :event="event" @remove-item="removeEvent"/>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else>
-                    <p class="text-lg">No upcoming event</p>
-                </div>
+                <ul class="scale-100">
+                    <li v-for="(event, index) in events" :key="index">
+                        <EventListItem :event="event" @remove-item="removeEvent"/>
+                    </li>
+                </ul>
+            </div>
+            <div v-else>
+                <p class="text-lg">No upcoming event</p>
             </div>
         </div>
     </div>

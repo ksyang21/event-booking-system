@@ -24,11 +24,11 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'string',
             'date' => 'required|date',
             'time' => 'required',
-            'location' => 'required',
+            'location' => 'string',
             'capacity' => 'required|integer',
         ]);
 
