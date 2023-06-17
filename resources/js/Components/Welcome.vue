@@ -55,15 +55,15 @@ async function getUpcomingEvents() {
             <h1 class="text-3xl font-semibold">
                 Event Booking System
             </h1>
-            <div class="ml-auto">
-                <a href="javascript:void(0)" class="rounded-full bg-slate-300 py-2 px-6 hover:bg-slate-400"
+            <div class="ml-auto hidden md:flex">
+                <a href="javascript:void(0)" class="ml-2 rounded-full bg-slate-300 py-2 px-6 hover:bg-slate-400"
                    @click="seedEvents">
                     Seed Event
                 </a>
                 <Link :href="route('events.create')"
                       class="ml-2 rounded-full bg-green-500 py-2 px-6 hover:bg-green-600 text-white">
                     <font-awesome-icon icon="plus" class="mr-2"></font-awesome-icon>
-                    Add
+                    New Event
                 </Link>
             </div>
         </div>
@@ -79,14 +79,20 @@ async function getUpcomingEvents() {
 
         <div class="mt-7">
             <div v-if="events.length > 0">
-                <p class="text-xl font-semibold" v-if="events.length > 0">
-                    You have <span class="text-blue-500">{{ events.length }}</span> upcoming event<span
-                    v-if="events.length > 1">s</span>.
-                </p>
+                <div class="hidden md:flex items-center">
+                    <p class="text-xl font-semibold" v-if="events.length > 0">
+                        You have <span class="text-blue-500">{{ events.length }}</span> upcoming event<span
+                        v-if="events.length > 1">s</span>.
+                    </p>
+                    <Link :href="route('events.index')"
+                          class="ml-auto rounded-full bg-blue-400 py-2 px-6 hover:bg-blue-600 text-white">
+                        View All
+                    </Link>
+                </div>
 
                 <ul class="scale-100">
                     <li v-for="(event, index) in events" :key="index">
-                        <EventListItem :event="event" @remove-item="removeEvent"/>
+                        <EventListItem :event="event" :show-status="false" @remove-item="removeEvent"/>
                     </li>
                 </ul>
             </div>

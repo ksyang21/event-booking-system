@@ -1,5 +1,4 @@
 <script setup>
-
 </script>
 
 <template>
@@ -20,7 +19,7 @@
         <li class="filter-switch-item flex relative h-8 bg-gray-300x">
             <input type="radio" name="filter1" id="filter1-3" class="sr-only">
             <label for="filter1-3" class="h-8 py-1 px-2 text-sm leading-6 text-gray-600 hover:text-gray-800 bg-white rounded shadow">
-                Complete
+                Completed
             </label>
         </li>
     </ul>

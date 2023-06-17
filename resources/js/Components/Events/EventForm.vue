@@ -47,6 +47,10 @@ function quickFill() {
     form.location = 'Meeting room 1'
     form.capacity = 2
 }
+
+function goBack() {
+    window.history.back()
+}
 </script>
 
 <template>
@@ -134,10 +138,10 @@ function quickFill() {
                 </div>
             </div>
             <div class="flex items-center mt-10">
-                <Link :href="route('dashboard')" class="hover:underline hover:text-blue-500">
+                <button :href="route('dashboard')" class="hover:underline hover:text-blue-500" type="button" @click="goBack">
                     <font-awesome-icon icon="angle-left" class="mx-1"></font-awesome-icon>
-                    Back to Dashboard
-                </Link>
+                    Back
+                </button>
                 <button class="ml-auto rounded-full bg-green-500 py-2 px-6 hover:bg-green-600 text-white" type="submit">
                     Create
                 </button>
