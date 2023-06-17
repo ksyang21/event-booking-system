@@ -34,7 +34,7 @@ class EventController extends Controller
 
         Event::create($validatedData);
 
-        return Redirect::route('events.index')->with('success', 'Event created successfully!');
+        return Redirect::route('dashboard')->with('success', 'Event created successfully!');
     }
 
     public function show(Event $event)

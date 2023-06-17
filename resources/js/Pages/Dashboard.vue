@@ -1,10 +1,27 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
+import {usePage} from "@inertiajs/vue3";
+import {computed, inject} from "vue";
 
 defineProps({
     upcomingEvents: Array,
+    session: Array
 })
+
+const Swal = inject('$swal')
+const message = computed(() => usePage().props.alert.success)
+if (message.value) {
+    Swal.fire({
+        text: message.value,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        position: 'top-end',
+        toast: true
+    })
+}
 </script>
 
 <template>
