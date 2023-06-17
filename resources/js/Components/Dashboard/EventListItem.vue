@@ -1,11 +1,12 @@
 <script setup>
 import {h, inject} from 'vue';
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {FontAwesomeIcon, FontAwesomeLayers} from "@fortawesome/vue-fontawesome";
 import {NButton, NDropdown, NIcon} from 'naive-ui'
 import {Pen, Trash, CheckCircle} from '@vicons/fa';
 
 const props = defineProps({
     event: Object,
+    showStatus: Boolean
 })
 const emit = defineEmits(['remove-item'])
 
@@ -40,7 +41,7 @@ const options = [
                     if (result.isConfirmed) {
                         let eventId = props.event.id;
                         let response = await deleteEvent(eventId);
-                        if(response.data.status === 1) {
+                        if (response.data.status === 1) {
                             emit('remove-item', eventId, response.data.message)
                         }
                     }
@@ -106,6 +107,16 @@ function getDayOfWeek(dateString) {
     return daysOfWeek[dayOfWeekIndex].toUpperCase();
 }
 
+function getStatusText(status) {
+    switch (status) {
+        case 0:
+            return 'Upcoming';
+        case 1 :
+            return 'Completed';
+        default:
+            return 'Unknown';
+    }
+}
 </script>
 
 <template>
@@ -131,7 +142,23 @@ function getDayOfWeek(dateString) {
             </div>
             <p class="text-2xl">{{ event.title }}</p>
             <div class="ml-auto">
-                <n-dropdown trigger="hover" :options="options" :size="'large'">
+                <div v-if="showStatus">
+                    <div class="flex flex-col" v-if="event.status === 0">
+                        <div class="flex items-center ml-auto mr-4 mb-3">
+                            <font-awesome-icon icon="pen-to-square" class="text-blue-600 cursor-pointer"/>
+                            <font-awesome-icon icon="trash" class="ml-2 text-red-500 cursor-pointer"/>
+                        </div>
+                        <p class="mx-2 rounded-full bg-orange-300 py-1 px-3 text-sm">
+                            <font-awesome-icon icon="hourglass-start" />
+                            Upcoming
+                        </p>
+                    </div>
+                    <p v-if="event.status === 1" class="mr-2 rounded-full bg-green-300 py-1 px-3 text-sm">
+                        <font-awesome-icon icon="check-circle"/>
+                        Completed
+                    </p>
+                </div>
+                <n-dropdown v-else trigger="hover" :options="options" :size="'large'">
                     <n-button>Action
                         <font-awesome-icon icon="chevron-down" class="ml-2"></font-awesome-icon>
                     </n-button>
