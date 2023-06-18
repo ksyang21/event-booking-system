@@ -4,10 +4,29 @@ import StatusFilter from "@/Components/Dashboard/StatusFilter.vue";
 import EventListItem from "@/Components/Dashboard/EventListItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {Link} from "@inertiajs/vue3";
+import {inject, ref} from "vue";
 
 const props = defineProps({
     events: Array
 })
+
+const Swal = inject('$swal')
+const events = ref(props.events)
+
+function removeEvent(eventId, message) {
+    events.value = events.value.filter(event => event.id !== eventId)
+    Swal.fire({
+        text: message,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        position: 'top-end',
+        toast: true
+    })
+}
 </script>
 <template>
     <AppLayout title="Create">
@@ -43,7 +62,7 @@ const props = defineProps({
                         </div>
                         <ul class="scale-100">
                             <li v-for="(event, index) in events" :key="index">
-                                <EventListItem :event="event" :show-status="true"/>
+                                <EventListItem :event="event" :show-status="true" @remove-item="removeEvent"/>
                             </li>
                         </ul>
                     </div>

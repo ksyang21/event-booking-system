@@ -32,20 +32,7 @@ const options = [
         icon: renderIcon(Trash),
         props: {
             onClick: () => {
-                Swal.fire({
-                    icon: 'info',
-                    html: `Are you sure you want to delete <b>${props.event.title}</b>?`,
-                    showCancelButton: true,
-                    confirmButtonColor: '#d71d28'
-                }).then(async (result) => {
-                    if (result.isConfirmed) {
-                        let eventId = props.event.id;
-                        let response = await deleteEvent(eventId);
-                        if (response.data.status === 1) {
-                            emit('remove-item', eventId, response.data.message)
-                        }
-                    }
-                })
+                confirmDelete()
             },
         }
     },
@@ -107,15 +94,21 @@ function getDayOfWeek(dateString) {
     return daysOfWeek[dayOfWeekIndex].toUpperCase();
 }
 
-function getStatusText(status) {
-    switch (status) {
-        case 0:
-            return 'Upcoming';
-        case 1 :
-            return 'Completed';
-        default:
-            return 'Unknown';
-    }
+function confirmDelete() {
+    Swal.fire({
+        icon: 'info',
+        html: `Are you sure you want to delete <b>${props.event.title}</b>?`,
+        showCancelButton: true,
+        confirmButtonColor: '#d71d28'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            let eventId = props.event.id;
+            let response = await deleteEvent(eventId);
+            if (response.data.status === 1) {
+                emit('remove-item', eventId, response.data.message)
+            }
+        }
+    })
 }
 </script>
 
@@ -145,15 +138,15 @@ function getStatusText(status) {
                 <div v-if="showStatus">
                     <div class="flex flex-col" v-if="event.status === 0">
                         <div class="flex items-center ml-auto mr-4 mb-3">
-                            <font-awesome-icon icon="pen-to-square" class="text-blue-600 cursor-pointer"/>
-                            <font-awesome-icon icon="trash" class="ml-2 text-red-500 cursor-pointer"/>
+                            <font-awesome-icon icon="pen-to-square" class="text-blue-600 cursor-pointer hover:text-blue-900"/>
+                            <font-awesome-icon icon="trash" class="ml-2 text-red-500 cursor-pointer hover:text-red-800" @click="confirmDelete"/>
                         </div>
-                        <p class="mx-2 rounded-full bg-orange-300 py-1 px-3 text-sm">
+                        <p class="mx-2 rounded-full bg-orange-300 py-1 px-3 text-sm text-orange-700">
                             <font-awesome-icon icon="hourglass-start" />
                             Upcoming
                         </p>
                     </div>
-                    <p v-if="event.status === 1" class="mr-2 rounded-full bg-green-300 py-1 px-3 text-sm">
+                    <p v-if="event.status === 1" class="mr-2 rounded-full bg-green-300 py-1 px-3 text-sm text-green-600">
                         <font-awesome-icon icon="check-circle"/>
                         Completed
                     </p>
