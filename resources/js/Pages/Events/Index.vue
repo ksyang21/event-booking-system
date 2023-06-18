@@ -12,9 +12,12 @@ const props = defineProps({
 
 const Swal = inject('$swal')
 const events = ref(props.events)
+const filteredEvents = ref(props.events)
+const eventStatus = ref(-1)
 
 function removeEvent(eventId, message) {
     events.value = events.value.filter(event => event.id !== eventId)
+    filterEvents(eventStatus.value)
     Swal.fire({
         text: message,
         icon: "success",
@@ -26,6 +29,15 @@ function removeEvent(eventId, message) {
         position: 'top-end',
         toast: true
     })
+}
+
+function filterEvents(status) {
+    eventStatus.value = status
+    if(status < 0) {
+        filteredEvents.value = events.value
+    } else {
+        filteredEvents.value = events.value.filter(event => event.status === status)
+    }
 }
 </script>
 <template>
@@ -52,16 +64,16 @@ function removeEvent(eventId, message) {
                     </div>
                     <div class="p-6 lg:p-8 bg-white">
                         <div class="flex items-center">
-                            <p class="text-xl font-semibold" v-if="events.length > 0">
-                                Total <span class="text-blue-500">{{ events.length }}</span> event<span
-                                v-if="events.length > 1">s</span> recorded.
+                            <p class="text-xl font-semibold" v-if="filteredEvents.length > 0">
+                                Total <span class="text-blue-500">{{ filteredEvents.length }}</span> event<span
+                                v-if="filteredEvents.length > 1">s</span> recorded.
                             </p>
                             <div class="ml-auto">
-                                <StatusFilter :extra-class="'ml-auto'"></StatusFilter>
+                                <StatusFilter :extra-class="'ml-auto'" @filter-events="filterEvents"></StatusFilter>
                             </div>
                         </div>
                         <ul class="scale-100">
-                            <li v-for="(event, index) in events" :key="index">
+                            <li v-for="(event, index) in filteredEvents" :key="index">
                                 <EventListItem :event="event" :show-status="true" @remove-item="removeEvent"/>
                             </li>
                         </ul>
