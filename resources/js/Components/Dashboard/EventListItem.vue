@@ -3,6 +3,7 @@ import {h, inject, ref} from 'vue';
 import {FontAwesomeIcon, FontAwesomeLayers} from "@fortawesome/vue-fontawesome";
 import {NButton, NDropdown, NIcon} from 'naive-ui'
 import {Pen, Trash, CheckCircle} from '@vicons/fa';
+import {router} from '@inertiajs/vue3';
 
 const props = defineProps({
     event: Object,
@@ -24,7 +25,12 @@ const options = [
     {
         label: "Edit",
         key: "edit",
-        icon: renderIcon(Pen)
+        icon: renderIcon(Pen),
+        props: {
+            onClick: () => {
+                edit(currentEvent.value.id)
+            },
+        }
     },
     {
         label: "Delete",
@@ -75,6 +81,7 @@ async function getEventByID(eventId) {
         console.log({Error: error});
     }
 }
+
 function getDayOfWeek(dateString) {
     const dateParts = dateString.split('-');
     const year = parseInt(dateParts[0]);
@@ -86,6 +93,10 @@ function getDayOfWeek(dateString) {
     const dayOfWeekIndex = date.getDay();
 
     return daysOfWeek[dayOfWeekIndex].toUpperCase();
+}
+
+function edit(eventId) {
+    router.get(`/events/${eventId}/edit`)
 }
 
 function confirmDelete() {
@@ -132,7 +143,7 @@ function confirmComplete(needRemoval) {
     <div class="border border-slate-100 shadow-md rounded-md mt-3 w-100 p-3">
         <div class="flex items-center border-b-2 pb-3">
             <div class="flex flex-col items-center px-5 border-r-2 border-gray-400 min-w-[8rem] max-w-[8rem] w-[8rem]">
-<!--                <p class="text-sm">{{ getDayOfWeek(currentEvent.date) }}</p>-->
+                <!--                <p class="text-sm">{{ getDayOfWeek(currentEvent.date) }}</p>-->
                 <p class="text-lg">{{ currentEvent.date }}</p>
             </div>
             <div class="flex flex-col px-5 min-w-[12rem] max-w-[12rem] w-[12rem]">
@@ -158,7 +169,8 @@ function confirmComplete(needRemoval) {
                                                class="text-green-500 cursor-pointer hover:text-green-600"
                                                @click="confirmComplete(0)"/>
                             <font-awesome-icon icon="pen-to-square"
-                                               class="ml-2 text-blue-500 cursor-pointer hover:text-blue-600"/>
+                                               class="ml-2 text-blue-500 cursor-pointer hover:text-blue-600"
+                                               @click="edit(currentEvent.id)"/>
                             <font-awesome-icon icon="trash" class="ml-2 text-red-500 cursor-pointer hover:text-red-600"
                                                @click="confirmDelete"/>
                         </div>
