@@ -33,7 +33,7 @@ function removeEvent(eventId, message) {
 
 function filterEvents(status) {
     eventStatus.value = status
-    if(status < 0) {
+    if (status < 0) {
         filteredEvents.value = events.value
     } else {
         filteredEvents.value = events.value.filter(event => event.status === status)
@@ -62,17 +62,22 @@ function filterEvents(status) {
                             </Link>
                         </div>
                     </div>
-                    <div class="p-6 lg:p-8 bg-white">
-                        <div class="flex items-center">
-                            <p class="text-xl font-semibold" v-if="filteredEvents.length > 0">
-                                Total <span class="text-blue-500">{{ filteredEvents.length }}</span> event<span
-                                v-if="filteredEvents.length > 1">s</span> recorded.
-                            </p>
-                            <div class="ml-auto">
-                                <StatusFilter :extra-class="'ml-auto'" @filter-events="filterEvents"></StatusFilter>
-                            </div>
+                    <div class="p-6 pt-0 lg:p-8 lg:pt-0 bg-white">
+                        <div class="ml-auto">
+                            <StatusFilter :extra-class="'ml-auto'" @filter-events="filterEvents"></StatusFilter>
                         </div>
-                        <ul class="scale-100">
+                        <p class="text-xl font-semibold" v-if="filteredEvents.length > 0">
+                            Total <span class="text-blue-500">{{ filteredEvents.length }}</span> event<span
+                            v-if="filteredEvents.length > 1">s</span> recorded
+                        </p>
+                        <p class="text-lg" v-if="filteredEvents.length === 0">
+                            No event records found.
+                            <Link :href="route('events.create')"
+                                  class="ml-2 underline text-blue-500 hover:text-blue-600">
+                                Go create one now!
+                            </Link>
+                        </p>
+                        <ul class="scale-100" v-if="filteredEvents.length > 0">
                             <li v-for="(event, index) in filteredEvents" :key="index">
                                 <EventListItem :event="event" :show-status="true" @remove-item="removeEvent"/>
                             </li>

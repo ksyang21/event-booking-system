@@ -33,3 +33,6 @@ Route::get('get-upcoming-events', [EventController::class, 'getUpcomingEvents'])
 
 // Delete event
 Route::delete('events/{event}', [EventController::class, 'destroy']);
+
+// Get event by ID
+Route::get('/events/{event}', [EventController::class, 'show']);
