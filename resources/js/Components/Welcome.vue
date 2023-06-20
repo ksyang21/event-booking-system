@@ -68,12 +68,18 @@ async function getUpcomingEvents() {
             </div>
         </div>
 
-        <p class="mt-8 text-2xl font-medium text-gray-900 flex items-center">
-            Welcome back,
-            <img v-if="$page.props.jetstream.managesProfilePhotos" class="h-8 w-8 rounded-full object-cover mx-2"
-                 :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-            {{ $page.props.auth.user.name }} !
-        </p>
+        <div class="flex items-center mt-8">
+            <p class="text-2xl font-medium text-gray-900 flex items-center">
+                Welcome back,
+                <img v-if="$page.props.jetstream.managesProfilePhotos" class="h-8 w-8 rounded-full object-cover mx-2"
+                     :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                {{ $page.props.auth.user.name }} !
+            </p>
+            <Link :href="route('events.index')"
+                  class="ml-auto rounded-full bg-blue-400 py-2 px-6 hover:bg-blue-600 text-white">
+                View All
+            </Link>
+        </div>
 
         <!--            <StatusFilter class="mt-6"/>-->
 
@@ -84,10 +90,6 @@ async function getUpcomingEvents() {
                         You have <span class="text-blue-500">{{ events.length }}</span> upcoming event<span
                         v-if="events.length > 1">s</span>.
                     </p>
-                    <Link :href="route('events.index')"
-                          class="ml-auto rounded-full bg-blue-400 py-2 px-6 hover:bg-blue-600 text-white">
-                        View All
-                    </Link>
                 </div>
 
                 <ul class="scale-100">
