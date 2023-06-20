@@ -3,14 +3,27 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import StatusFilter from "@/Components/Dashboard/StatusFilter.vue";
 import EventListItem from "@/Components/Dashboard/EventListItem.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {Link} from "@inertiajs/vue3";
-import {inject, ref} from "vue";
+import {Link, usePage} from "@inertiajs/vue3";
+import {computed, inject, ref} from "vue";
 
 const props = defineProps({
     events: Array
 })
 
 const Swal = inject('$swal')
+
+const message = computed(() => usePage().props.alert.success)
+if (message.value) {
+    Swal.fire({
+        text: message.value,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        position: 'top-end',
+        toast: true
+    })
+}
 const events = ref(props.events)
 const filteredEvents = ref(props.events)
 const eventStatus = ref(-1)

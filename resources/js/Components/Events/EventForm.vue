@@ -1,28 +1,31 @@
 <script setup>
 import {reactive, ref} from "vue";
-import {Link} from "@inertiajs/vue3";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import {router} from '@inertiajs/vue3';
 import moment from "moment/moment.js";
-// import moment from "moment/moment.js";
+
+const props = defineProps({
+    event: Object,
+    action: String
+})
+
+const isEdit = props.action === 'edit'
 
 const form = reactive({
-    date: new Date(),
-    time: new Date(),
-    title: '',
-    description: '',
-    location: '',
-    capacity: 0,
+    date: isEdit ? props.event.date : new Date(),
+    time: isEdit ? convertTimeToObj(props.event.time) : new Date(),
+    title: isEdit ? props.event.title : '',
+    description: isEdit ? props.event.description : '',
+    location: isEdit ? props.event.location : '',
+    capacity: isEdit ? props.event.capacity : 0,
     submitFail: false,
 })
 
+console.log(form.time)
 let submitFail = ref(false)
 
-/**
- * Setup VueDatePicker
- */
 function validateForm() {
     submitFail.value = (!form.title || !form.location || form.capacity < 0 || !form.capacity)
 }
@@ -35,7 +38,11 @@ function handleSubmit() {
         form.date = moment(form.date).format('YYYY-MM-DD')
         // Change form.time to time format to store in DB
         form.time = moment(form.time).format('H:m:00')
-        router.post('/events', form)
+        if(props.action === 'create') {
+            router.post('/events', form)
+        } else {
+            router.put(`/events/${props.event.id}`, form)
+        }
     }
 }
 
@@ -51,6 +58,12 @@ function quickFill() {
 function goBack() {
     window.history.back()
 }
+
+function convertTimeToObj(time) {
+    const [hours, minutes, seconds] = time.split(':');
+
+    return {hours: hours, minutes: minutes, seconds: seconds};
+}
 </script>
 
 <template>
@@ -59,7 +72,7 @@ function goBack() {
             <h1 class="text-3xl font-semibold">
                 New Event
             </h1>
-            <div class="ml-auto">
+            <div class="ml-auto" v-if="!isEdit">
                 <a href="javascript:void(0)" class="rounded-full bg-slate-300 py-2 px-6 hover:bg-slate-400"
                    @click="quickFill">
                     Quick Fill
@@ -76,7 +89,7 @@ function goBack() {
                         <font-awesome-icon icon="calendar" class="mx-1"></font-awesome-icon>
                         Date
                     </label>
-                    <VueDatePicker v-model="form.date" id="date" placeholder="Select event date" auto-apply
+                    <VueDatePicker v-model="form.date" id="date" placeholder="Select event date"
                                    :enable-time-picker="false" :clearable="false"/>
                     <p class="text-red-600 text-xs italic" v-if="submitFail && !form.date">Please select event date</p>
                 </div>
@@ -86,7 +99,7 @@ function goBack() {
                         <font-awesome-icon icon="clock" class="mx-1"></font-awesome-icon>
                         Time
                     </label>
-                    <VueDatePicker v-model="form.time" id="time" placeholder="Select event time" auto-apply time-picker
+                    <VueDatePicker v-model="form.time" id="time" placeholder="Select event time" time-picker
                                    :clearable="false"/>
                     <p class="text-red-600 text-xs italic" v-if="submitFail && !form.time">Please select event time</p>
                 </div>
@@ -142,8 +155,11 @@ function goBack() {
                     <font-awesome-icon icon="angle-left" class="mx-1"></font-awesome-icon>
                     Back
                 </button>
-                <button class="ml-auto rounded-full bg-green-500 py-2 px-6 hover:bg-green-600 text-white" type="submit">
+                <button class="ml-auto rounded-full bg-green-500 py-2 px-6 hover:bg-green-600 text-white" type="submit" v-if="!isEdit">
                     Create
+                </button>
+                <button class="ml-auto rounded-full bg-green-500 py-2 px-6 hover:bg-green-600 text-white" type="submit" v-else>
+                    Update
                 </button>
             </div>
         </div>
